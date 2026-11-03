@@ -39,6 +39,19 @@ The plugin works offline. It makes no network requests, uses no telemetry, requi
 
 `main.js` is the readable JavaScript source and the release entry point; no build step or bundled dependencies are required. Obsidian supplies the `obsidian`, `@codemirror/view`, and `@codemirror/state` modules at runtime. Check syntax with `node --check main.js`.
 
+## Release verification
+
+GitHub Actions packages the committed source and creates signed provenance attestations for all three release files before publication. The workflow checks JavaScript syntax, version metadata, and CSS overrides, then verifies each attestation.
+
+To verify a downloaded asset with the GitHub CLI:
+
+```sh
+gh attestation verify main.js --repo Ayush4265/heading-status-tracker
+gh attestation verify styles.css --repo Ayush4265/heading-status-tracker
+```
+
+For a new release, update `manifest.json` and `versions.json` together on `main`. The release workflow publishes the new version automatically.
+
 ## License
 
 MIT. Copyright (c) 2026 atharva savnerkar.

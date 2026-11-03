@@ -1,0 +1,82 @@
+name: Publish verified plugin release
+
+on:
+  push:
+    branches: [main]
+    paths: [manifest.json]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plugin-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    steps:
+      - name: Check out release source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: Validate and package release
+        id: package
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check main.js
+          node <<'NODE'
+          const fs = require('node:fs');
+          const assert = require('node:assert/strict');
+          const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
+          const versions = JSON.parse(fs.readFileSync('versions.json', 'utf8'));
+          assert.match(manifest.version, /^\d+\.\d+\.\d+$/);
+          assert.equal(versions[manifest.version], manifest.minAppVersion);
+          assert.ok(!/!important\b/i.test(fs.readFileSync('styles.css', 'utf8')), 'Remove CSS !important overrides before release');
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, 'version=' + manifest.version + '\n');
+          fs.mkdirSync('dist', {recursive: true});
+          for (const file of ['main.js', 'manifest.json', 'styles.css']) fs.copyFileSync(file, 'dist/' + file);
+          NODE
+
+      - name: Attest the exact release files
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
+        with:
+          subject-path: |
+            dist/main.js
+            dist/manifest.json
+            dist/styles.css
+
+      - name: Verify provenance
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for asset in main.js manifest.json styles.css; do
+            gh attestation verify "dist/$asset" --repo "$GITHUB_REPOSITORY"
+          done
+
+      - name: Publish versioned release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.package.outputs.version }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view "$VERSION" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release $VERSION already exists; refusing to overwrite it."
+            exit 1
+          fi
+          gh release create "$VERSION" dist/main.js dist/manifest.json dist/styles.css \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title "Heading Status Tracker $VERSION" \
+            --notes "Replace the print CSS override with specific selectors. All three installation files include GitHub-verified build provenance. Requires Obsidian 1.15.0 or later."

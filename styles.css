@@ -185,7 +185,8 @@ h6.has-missing-extra {
 }
 
 @media print {
-  .heading-status-container {
-    display: none !important;
+  .markdown-preview-view .heading-status-container,
+  .markdown-source-view .heading-status-container {
+    display: none;
   }
 }
