@@ -1,0 +1,191 @@
+/* Heading Status Tracker Plugin Styles */
+
+.heading-status-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  vertical-align: middle;
+  user-select: none;
+  font-family: var(--font-interface, sans-serif);
+  font-weight: 500;
+  line-height: 1;
+  opacity: 0.85;
+  transition: opacity 0.15s ease-in-out;
+}
+
+.heading-status-container.pos-after {
+  margin-left: 10px;
+  margin-right: 2px;
+}
+
+.heading-status-container.pos-before {
+  margin-right: 8px;
+  margin-left: 2px;
+}
+
+.heading-status-container:hover {
+  opacity: 1;
+}
+
+.heading-status-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 18px;
+  height: 18px;
+  padding: 1px 4px;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+  border: 1px solid var(--background-modifier-border, #444);
+  background-color: var(--background-secondary, rgba(0, 0, 0, 0.05));
+  color: var(--text-muted, #888);
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.heading-status-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.15);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.heading-status-btn:active {
+  transform: translateY(0);
+}
+
+/* Tick 1: Read */
+.heading-status-btn.btn-read.is-active {
+  background-color: rgba(16, 185, 129, 0.18);
+  border-color: #10b981;
+  color: #10b981;
+  font-weight: 600;
+}
+
+/* Tick 2: Written */
+.heading-status-btn.btn-written.is-active {
+  background-color: rgba(59, 130, 246, 0.18);
+  border-color: #3b82f6;
+  color: #3b82f6;
+  font-weight: 600;
+}
+
+/* Tick 3: Missing / Extra to read */
+.heading-status-btn.btn-missing.is-active {
+  background-color: rgba(245, 158, 11, 0.22);
+  border-color: #f59e0b;
+  color: #f59e0b;
+  font-weight: 600;
+  animation: pulse-missing 2s infinite ease-in-out;
+}
+
+@keyframes pulse-missing {
+  0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+  70% { box-shadow: 0 0 0 4px rgba(245, 158, 11, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+}
+
+/* Icons inside the buttons */
+.heading-status-icon {
+  display: inline-block;
+  line-height: 1;
+}
+
+.heading-status-icon svg {
+  width: 12px;
+  height: 12px;
+  vertical-align: middle;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2.2;
+}
+
+/* Heading Highlight when Missing/Extra is active */
+h1.has-missing-extra,
+h2.has-missing-extra,
+h3.has-missing-extra,
+h4.has-missing-extra,
+h5.has-missing-extra,
+h6.has-missing-extra {
+  border-left: 3px solid #f59e0b;
+  padding-left: 8px;
+}
+
+/* Status Bar item */
+.heading-status-statusbar {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.heading-status-statusbar:hover {
+  color: var(--text-normal);
+}
+
+/* Modal Statistics Styling */
+.heading-status-modal {
+  padding: 10px;
+}
+
+.heading-status-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 18px 0;
+}
+
+.heading-status-card {
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  text-align: center;
+}
+
+.heading-status-card-val {
+  font-size: 24px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.heading-status-card-read .heading-status-card-val {
+  color: #10b981;
+}
+
+.heading-status-card-written .heading-status-card-val {
+  color: #3b82f6;
+}
+
+.heading-status-card-missing .heading-status-card-val {
+  color: #f59e0b;
+}
+
+.heading-status-missing-list {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  background: var(--background-primary);
+}
+
+.heading-status-missing-item {
+  padding: 4px 0;
+  cursor: pointer;
+  color: var(--text-normal);
+  display: flex;
+  justify-content: space-between;
+}
+
+.heading-status-missing-item:hover {
+  color: #f59e0b;
+  text-decoration: underline;
+}
+
+@media print {
+  .heading-status-container {
+    display: none !important;
+  }
+}

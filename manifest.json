@@ -1,0 +1,10 @@
+{
+  "id": "heading-status-tracker",
+  "name": "Heading Status Tracker",
+  "version": "1.0.0",
+  "minAppVersion": "1.15.0",
+  "description": "Track read, written, and missing or extra study topics beside Markdown headings, with progress statistics and navigation commands.",
+  "author": "atharva savnerkar",
+  "authorUrl": "https://github.com/Ayush4265",
+  "isDesktopOnly": false
+}
