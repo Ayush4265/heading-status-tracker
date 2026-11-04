@@ -112,6 +112,15 @@ h6.has-missing-extra {
   padding-left: 8px;
 }
 
+.markdown-source-view .cm-line.heading-status-missing-line {
+  border-left: 3px solid #f59e0b;
+  padding-left: 8px;
+}
+
+.heading-status-btn.is-calculated {
+  border-style: dashed;
+}
+
 /* Status Bar item */
 .heading-status-statusbar {
   cursor: pointer;
@@ -177,11 +186,30 @@ h6.has-missing-extra {
   color: var(--text-normal);
   display: flex;
   justify-content: space-between;
+  width: 100%;
+  height: auto;
+  text-align: left;
+  white-space: normal;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
 }
 
 .heading-status-missing-item:hover {
   color: #f59e0b;
   text-decoration: underline;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heading-status-btn.btn-missing.is-active {
+    animation: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .heading-status-stats-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media print {

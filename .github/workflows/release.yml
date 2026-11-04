@@ -27,23 +27,37 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Use Node.js 24
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24'
+          cache: npm
+
       - name: Validate and package release
         id: package
         shell: bash
         run: |
           set -euo pipefail
+          npm ci
+          npm test
           node --check main.js
           node <<'NODE'
           const fs = require('node:fs');
           const assert = require('node:assert/strict');
           const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
           const versions = JSON.parse(fs.readFileSync('versions.json', 'utf8'));
+          const packageInfo = JSON.parse(fs.readFileSync('package.json', 'utf8'));
           assert.match(manifest.version, /^\d+\.\d+\.\d+$/);
+          assert.equal(packageInfo.version, manifest.version);
           assert.equal(versions[manifest.version], manifest.minAppVersion);
           assert.ok(!/!important\b/i.test(fs.readFileSync('styles.css', 'utf8')), 'Remove CSS !important overrides before release');
           fs.appendFileSync(process.env.GITHUB_OUTPUT, 'version=' + manifest.version + '\n');
           fs.mkdirSync('dist', {recursive: true});
           for (const file of ['main.js', 'manifest.json', 'styles.css']) fs.copyFileSync(file, 'dist/' + file);
+          const changelog = fs.readFileSync('CHANGELOG.md', 'utf8');
+          const marker = '## ' + manifest.version + '\n';
+          assert.ok(changelog.includes(marker), 'Add changelog entries for the release');
+          fs.writeFileSync('dist/release-notes.md', changelog.split(marker)[1].split('\n## ')[0].trim() + '\n');
           NODE
 
       - name: Attest the exact release files
@@ -79,4 +93,4 @@ jobs:
             --repo "$GITHUB_REPOSITORY" \
             --target "$GITHUB_SHA" \
             --title "Heading Status Tracker $VERSION" \
-            --notes "Replace the print CSS override with specific selectors. All three installation files include GitHub-verified build provenance. Requires Obsidian 1.15.0 or later."
+            --notes-file dist/release-notes.md
