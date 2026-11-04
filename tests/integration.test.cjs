@@ -26,7 +26,7 @@ for (const [name, fn] of Object.entries({
 })) dom.window.HTMLElement.prototype[name] = fn;
 
 class MockPlugin {
-  async loadData() { return {}; }
+  async loadData() { return null; }
   async saveData(settings) { this.saved = settings; }
   registerEditorExtension(extension) { this.extension = extension; }
   registerMarkdownPostProcessor(processor) { this.processor = processor; }

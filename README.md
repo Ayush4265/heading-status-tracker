@@ -2,7 +2,11 @@
 
 Track study progress beside Markdown headings in Obsidian. Mark topics **Read**, **Written**, or **Missing / Extra**, and keep parent headings synchronized with their subheadings.
 
-## What's new in 1.1.0
+## Latest update: 1.1.1
+
+Fixes a startup crash on fresh installations, including desktop and mobile installations without saved plugin settings. If version 1.1.0 failed to load, update to 1.1.1 and enable the plugin again in **Settings → Community plugins**.
+
+## Automatic parent tracking (1.1.0)
 
 Automatic parent tracking for **Read and Written is enabled by default**, including in existing notes. Parent statuses are recalculated when notes are opened or edited. No background scan rewrites unopened notes.
 

@@ -12,6 +12,16 @@ test('defaults are enabled and settings arrays are independent', () => {
   assert.deepEqual(settingsWithDefaults({ enabledLevels: [2, 2, 9, '1'] }).enabledLevels, [2]);
 });
 
+test('fresh installations and malformed saved settings safely use defaults', () => {
+  for (const saved of [null, undefined, false, 0, 'invalid', []]) {
+    const settings = settingsWithDefaults(saved);
+    assert.deepEqual(settings.enabledLevels, [1, 2, 3, 4, 5, 6]);
+    assert.equal(settings.autoParentRead, true);
+    assert.equal(settings.autoParentWritten, true);
+  }
+  assert.equal(settingsWithDefaults({ autoParentRead: false }).autoParentRead, false);
+});
+
 test('parent clicks cascade only inside their section and either status is independent', () => {
   const original = '# Book\n## Chapter\n#### Topic A\n#### Topic B\n## Other chapter\n### Unread topic\n';
   let result = toggleStatus(original, {}, 1, 'read');

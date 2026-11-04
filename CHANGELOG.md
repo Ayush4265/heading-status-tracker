@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.1
+
+- Fix a startup crash on fresh installations, where Obsidian returns null for settings that have not been saved yet.
+- Restore plugin controls and the settings tab on affected desktop and mobile installations.
+- Add regression coverage for null or malformed saved settings and run the full plugin startup tests with fresh-install settings.
+
 ## 1.1.0
 
 - Enable automatic parent Read and Written tracking by default.

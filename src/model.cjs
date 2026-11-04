@@ -13,6 +13,8 @@ const DEFAULT_SETTINGS = Object.freeze({
 const STATUS = /<!--\s*\[([ xX])\]\[([ xX])\](?:\[([ xX!])\])?\s*-->/;
 
 function settingsWithDefaults(saved = {}) {
+  // Obsidian returns null until this plugin has saved settings for the first time.
+  if (!saved || typeof saved !== 'object' || Array.isArray(saved)) saved = {};
   const settings = { ...DEFAULT_SETTINGS, ...saved };
   settings.enabledLevels = Array.isArray(saved.enabledLevels)
     ? [...new Set(saved.enabledLevels.filter(level => Number.isInteger(level) && level >= 1 && level <= 6))]
